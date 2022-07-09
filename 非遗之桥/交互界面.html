@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>交互</title>
+        
+        <script type="text/javascript">
+            // <script src="外部js文件路径" type="text/javascript">
+                function change_button_text()
+                {
+                    // document.getElementById("button2").value = "Success";
+                    // document.getElementById("button_2").innerHTML = "Success";
+                    document.getElementById("btn-6").innerText = document.getElementsByTagName("a")[0].getAttribute("href");
+                    document.getElementById("btn-9").innerText = document.getElementsByTagName("a")[1].getAttribute("href");
+                }
+     
+            </script>
+    <style type="text/css">
+	html{height:100%;
+		background-image: url("图片1.png"),url("图片2.png"),url("图片3.png");
+		background-position: 200px 0,120px 150px ,0 550px ;
+		background-repeat: no-repeat,no-repeat;
+		}  
+	h1 {
+	  position: relative;
+	  text-align: left;
+	  left: 150px;
+	  color: #353535;
+      font-size: 70px;
+      font-weight: 700;
+	  font-family: "Cormorant Garamond", serif;
+	}
+	
+	p {
+	  font-family: 'Lato', sans-serif;
+	  font-weight: 300;
+	  text-align: center;
+	  font-size: 18px;
+	  color: #676767;
+	}
+	.frame {
+	  width: 90%;
+	  margin: 40px auto;
+	  text-align: center;
+	}
+	button {
+	  margin: 20px;
+
+	}
+	.custom-btn {
+	  width: 180px;
+	  height: 70px;
+	  color: black;
+	  border-radius: 5px;
+	  padding: 10px 25px;
+	  font-family: 'Lato', sans-serif;
+	  font-weight: 500;
+      font-size: x-large;
+	  background: transparent;
+	  cursor: pointer;
+	  transition: all 0.3s ease;
+	  position: relative;
+	  display: inline-block;
+	   box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+	   7px 7px 20px 0px rgba(0,0,0,.1),
+	   4px 4px 5px 0px rgba(0,0,0,.1);
+	  outline: none;
+	}
+   
+        .btn-6 {
+	  background: rgb(255, 255, 255);
+	background: radial-gradient(circle, rgb(242, 244, 241) 50%, white 100%);
+	  line-height: 42px;
+	  padding: 0;
+	  border: none;
+      width: 200px;
+	}
+	.btn-6 span {
+	  position: relative;
+	  display: block;
+	  width: 100%;
+	  height: 100%;
+      top: 12px;
+	}
+	.btn-6:before,
+	.btn-6:after {
+	  position: absolute;
+	  content: "";
+	  height: 0%;
+	  width: 1px;
+	 box-shadow:
+	   -1px -1px 20px 0px rgba(255,255,255,1),
+	   -4px -4px 5px 0px rgba(255,255,255,1),
+	   7px 7px 20px 0px rgba(0,0,0,.4),
+	   4px 4px 5px 0px rgba(0,0,0,.3);
+	}
+	.btn-6:before {
+	  right: 0;
+	  top: 0;
+	  transition: all 500ms ease;
+	}
+	.btn-6:after {
+	  left: 0;
+	  bottom: 0;
+	  transition: all 500ms ease;
+	}
+	.btn-6:hover{
+	  background: transparent;
+	  color: #76aef1;
+	  box-shadow: none;
+	}
+	.btn-6:hover:before {
+	  transition: all 500ms ease;
+	  height: 100%;
+	}
+	.btn-6:hover:after {
+	  transition: all 500ms ease;
+	  height: 100%;
+	}
+	.btn-6 span:before,
+	.btn-6 span:after {
+	  position: absolute;
+	  content: "";
+	  box-shadow:
+	   -1px -1px 20px 0px rgba(255,255,255,1),
+	   -4px -4px 5px 0px rgba(255,255,255,1),
+	   7px 7px 20px 0px rgba(0,0,0,.4),
+	   4px 4px 5px 0px rgba(0,0,0,.3);
+	}
+	.btn-6 span:before {
+	  left: 0;
+	  top: 0;
+	  width: 0%;
+	  height: .5px;
+	  transition: all 500ms ease;
+	}
+	.btn-6 span:after {
+	  right: 0;
+	  bottom: 0;
+	  width: 0%;
+	  height: .5px;
+	  transition: all 500ms ease;
+	}
+	.btn-6 span:hover:before {
+	  width: 100%;
+	}
+	.btn-6 span:hover:after {
+	  width: 100%;
+	}
+
+
+            </style>
+            
+        </head>
+        <body >
+                <h1  style="position:relative;top: 300px;letter-spacing:30px; color: white;">
+                    <font size="x-large" face="黑体 "  >
+                        非 遗 之 桥
+                    </font>
+                </h1>
+				<a href="报告.html" target="_blank">
+                    <div  align="center" style="position:relative;left:200px;">
+                        <button class="custom-btn btn-6"><span>
+                                报告入口
+                            </span></button>
+                    </div>
+                </a>
+                <a href="大众.html" target="_blank">
+                    <div  align="center" style="position:relative;left:200px;">
+                        <button class="custom-btn btn-6"><span>
+                                大众入口
+                            </span></button>
+                    </div>
+                </a>
+                <a href="非遗传承人.html" target="_blank">
+                    <div  align="center" style="position:relative;left:200px;">
+                        <button class="custom-btn btn-6"><span>
+                                非遗传承人入口
+                            </span></button>
+                    </div>
+                </a>
+				<a href="个体户.html" target="_blank">
+                    <div  align="center" style="position:relative;left:200px;">
+                        <button class="custom-btn btn-6"><span>
+                                个体用户入口
+                            </span></button>
+                    </div>
+                </a>
+				<a href="管理系统.html" target="_blank">
+                    <div  align="center" style="position:relative;left:200px;">
+                        <button class="custom-btn btn-6"><span>
+                                管理系统入口
+                            </span></button>
+                    </div>
+                </a>
+				<div style="height: 400px;"></div>
+        </body>
+        
+ </html>	

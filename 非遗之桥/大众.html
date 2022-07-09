@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta name="robots" content="noindex, nofollow">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>
+            大众
+        </title>
+
+    <style type="text/css">
+               body,
+            #container {
+                width: 100%;
+                height: 100%;
+                margin: 5px;
+                font-family: "微软雅黑";
+            }
+
+            html{height:100%;
+		background-image: url("图片1.png"),url("图片3.png");
+		background-position: 200px 0,0 580px ;
+		background-repeat: no-repeat,no-repeat;
+		}  
+
+                p {
+                    margin-right: 30px;
+                    margin-top: 20px;
+                    font-weight: 700;
+                    text-align: center;
+                    font-size: 18px;
+                    color:white;
+                    float: left;
+                }
+            .frame {
+              width: 30%;
+              margin: 0px auto;
+              text-align: center;
+            }
+            button {
+              margin: 0px;
+            }
+            .custom-btn {
+              width: 60px;
+              height: 35px;
+              color: #fff;
+              border-radius: 5px;
+              padding: 5px 5px;
+              font-family: 'Lato', sans-serif;
+              font-weight: 500;
+              font-size: 18px;
+              background: transparent;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              position: relative;
+              display: inline-block;
+               box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+               7px 7px 20px 0px rgba(0,0,0,.1),
+               4px 4px 5px 0px rgba(0,0,0,.1);
+              outline: none;
+            }
+            </style>
+            <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.2&ak=5Tt95uGXtzemKlU3yneaPTIBqGOogLI6"></script>
+             </head>
+    <body>
+        
+         <h1 align="center" style="position:relative;top: 20px ;letter-spacing:30px; color: black;margin-bottom: 70px;">
+            <font size="18px" face="黑体"  >
+                大 众 界 面
+            </font>
+        </h1>
+        <table>
+            <tr>
+                <td>
+                    <div>
+                        <font size="6px" face="黑体"  >
+                            非遗分布：
+                            </font>
+                    </div>
+                </td>
+                <td>
+                    <div style="margin-left: 700px;">
+                        <font size="6px" face="黑体"  >
+                            乡村分布：
+                        </font>
+                    </div>
+                </td>
+            </tr>
+
+        </table>  
+        <div id="container" style="width: 45%;height: 80%; display: block;float: left;margin: auto;" ></div>   
+        <div id="container2" style="width: 45%;height: 80%; display: block;margin: auto;margin-right: 0px;"  ></div> 
+        <div style="height: 150px;"></div>     
+    </body>
+</html>
+
+<script>
+    function addMarker1(points) {
+        for(var i=0, pointsLen = points.length; i<pointsLen; i++) {
+        var point = new BMap.Point(points[i].lng, points[i].lat); //将标注点转化成地图上的点
+        var marker = new BMap.Marker(point); //将点转化成标注点
+        markersArray.push(marker);
+        map.addOverlay(marker);  //将标注点添加到地图上
+        //添加监听事件
+        (function() {
+            var thePoint = points[i];
+            marker.addEventListener("rightclick", function (e) {
+			  if(confirm('确定要删除吗')==true){
+			  	map.removeOverlay(this,thePoint);
+			      return true;			
+			  }else{			
+			       return false;			
+			   }
+        });
+            marker.addEventListener("click",
+            //显示信息的方法
+                function() {
+                showInfo(this,thePoint);
+            });
+         })();  
+    }
+    }
+    function addMarker2(points) {
+        for(var i=0, pointsLen = points.length; i<pointsLen; i++) {
+        var point = new BMap.Point(points[i].lng, points[i].lat); //将标注点转化成地图上的点
+        var marker = new BMap.Marker(point); //将点转化成标注点
+        markersArray.push(marker);
+        map2.addOverlay(marker);  //将标注点添加到地图上
+        //添加监听事件
+        (function() {
+            var thePoint = points[i];
+            marker.addEventListener("rightclick", function (e) {
+			  if(confirm('确定要删除吗')==true){
+			  	map2.removeOverlay(this,thePoint);
+			      return true;			
+			  }else{			
+			       return false;			
+			   }
+        });
+            marker.addEventListener("click",
+            //显示信息的方法
+                function() {
+                showInfo(this,thePoint);
+            });
+         })();  
+    }
+    }
+    function showInfo(thisMarker,point) {
+    //获取点的信息
+    var sContent = 
+    '<ul style="margin:0 0 5px 0;padding:0.2em 0">'
+    +'<li style="line-height: 15px;font-size: 13px;">'  
+    +'<span style="width: 50px;display: inline-block;">类型:</span>' + point.type + '</li>' 
+    +'<li style="line-height: 15px;font-size: 13px;">'  
+    +'<span style="width: 50px;display: inline-block;">经纬度:</span>' + point.lng+","+point.lat+ '</li>'  
+    +'<li style="line-height: 15px;font-size: 13px;">'  
+    +'<span style="width: 50px;display: inline-block;">地点:</span>' + point.address + '</li>'
+    +'<li style="line-height: 15px;font-size: 13px;">'  
+    +'<span style="width: 50px;display: inline-block;">详情:</span>' + point.detail + '</li>'
+    var infoWindow = new BMap.InfoWindow(sContent); //创建信息窗口对象
+    var infoWindow = new BMap.InfoWindow(sContent); //创建信息窗口对象
+    thisMarker.openInfoWindow(infoWindow); //图片加载完后重绘infoWindow
+}
+</script>
+
+<script>
+    var key = 1;  //开关
+    var key2 = 1;   //开关2
+    var map = new BMap.Map('container');
+    var map2 = new BMap.Map('container2'); // 创建Map实例
+    var geoc = new BMap.Geocoder();  //地址解析对象
+    var newpoint;
+    var points=[];
+    var markersArray = [];
+    var geolocation = new BMap.Geolocation();
+    map.centerAndZoom(new BMap.Point(106.561312,29.564221), 12); // 初始化地图,设置中心点坐标和地图级别
+    map2.centerAndZoom(new BMap.Point(106.561312,29.564221), 12);
+    geolocation.getCurrentPosition(function (r) {
+    if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+      var mk = new BMap.Marker(r.point);
+      map.panTo(r.point);
+      map.enableScrollWheelZoom(true);
+    }
+  }, {enableHighAccuracy: true})
+  map.addEventListener("click", showInfo1);
+  map2.addEventListener("click", showInfo1);
+  var placepoint=[
+  {"lng":106.584766,"lat":29.568199,"address":"洪崖洞","type":"非遗","detail":"项目：昆曲  传承人：李师傅 "},
+      {"lng":106.538136,"lat":29.621537,"address": "重庆市重庆市渝北区人和立交","type":"非遗","detail":"项目：铁花  传承人：陈师傅"},
+      {"lng":106.499718,"lat":29.459882,"address":"大渡口区义渡公园","type":"非遗","detail":"项目：凤阳花鼓  传承人：谢师傅"},
+      {"lng":106.730331,"lat":29.510301,"address":"迎龙湖国家湿地公园","type":"非遗","detail":"项目：木活字印刷术  传承人：王师傅"},
+      {"lng":106.701799,"lat":29.645597,"address":"玉峰山森林公园","type":"非遗","detail":"项目：奉节木雕  传承人：王师傅"},
+      {"lng":106.752851,"lat":29.74467,"address":"铜锣山矿山公园","type":"非遗","detail":"项目：酉阳土家面具阳戏  传承人：叶师傅"},
+      {"lng":106.601951,"lat":29.393743,"address": "重庆市重庆市巴南区南环互通","type":"非遗","detail":"项目：重庆蹬技  传承人：李师傅"},
+      {"lng":106.080042,"lat":29.834489,"address":"人民公园（迎宾东路）","type":"非遗","detail":"项目：巫溪嫁花  传承人：吴师傅"},
+      {"lng":106.452879,"lat":29.583095,"address": "磁器口","type":"非遗","detail":"项目：大足石雕  传承人：张师傅"},
+      {"lng":106.521106,"lat":29.672908,"address": "欢乐谷","type":"非遗","detail":"项目：铜梁龙灯彩扎  传承人：王师傅"},  
+  ]
+  var placepoint1=[
+  {"lng":106.584766,"lat":29.568199,"address":"洪崖洞","type":"乡村","detail":"黄莺大峡谷 特点：交通便利，旅游资源丰富"},
+      {"lng":106.538136,"lat":29.621537,"address": "重庆市重庆市渝北区人和立交","type":"乡村","detail":"圣灯山镇 特点：自然资源丰富，休闲避暑圣地"},
+      {"lng":106.499718,"lat":29.459882,"address":"大渡口区义渡公园","type":"乡村","detail":"万旦耕春 特点：田园风光、农耕文明"},
+      {"lng":106.730331,"lat":29.510301,"address":"迎龙湖国家湿地公园","type":"乡村","detail":"百年李子园 特点：游、学、吃、住为一体的游学乐园"},
+      {"lng":106.701799,"lat":29.645597,"address":"玉峰山森林公园","type":"乡村","detail":"巫山茶园村 特点：自驾郊游的理想之地"},
+      {"lng":106.601951,"lat":29.393743,"address": "重庆市重庆市巴南区南环互通","type":"乡村","detail":"柠檬小镇 特点：田园风光，柠檬鲜果"},
+      {"lng":106.080042,"lat":29.834489,"address":"人民公园（迎宾东路）","type":"乡村","detail":"黄莺大峡谷 特点：交通便利，旅游资源丰富"},
+   
+  ]
+  //内环point数组
+
+addMarker1(placepoint);
+addMarker2(placepoint1);
+    // 创建点标记
+  function validate() {
+    var sever_add = document.getElementsByName('sever_add')[0].value;
+    if (isNull(sever_add)) {
+      alert('请选择地址');
+      return false;
+    }
+    return true;
+  }
+  function showInfo1(e) {
+    document.getElementById('lng').value = e.point.lng;
+    document.getElementById('lat').value = e.point.lat;
+    geoc.getLocation(e.point, function (rs) {
+      var addComp = rs.addressComponents;
+      var address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber;
+    document.getElementById('sever_add').value = address;
+    });
+    if(key==0){
+    document.getElementById("btn9").addEventListener("click",function(){
+    var point2=[{"lng":e.point.lng,"lat":e.point.lat,"address":document.getElementById('sever_add').value}];
+    addMarker(point2);})
+    }
+  }
+</script>
+
+

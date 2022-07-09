@@ -1,0 +1,468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta name="robots" content="noindex, nofollow">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>
+            管理系统
+        </title>
+
+    <style type="text/css">
+               body,
+            #container {
+                width: 100%;
+                height: 100%;
+                margin: 5px;
+                font-family: "微软雅黑";
+            }
+
+        html{height:100%;
+                background-image: url("背景2.jpeg");
+                }
+
+                p {
+                    margin-right: 30px;
+                    margin-top: 20px;
+                    font-weight: 700;
+                    text-align: center;
+                    font-size: 18px;
+                    color:white;
+                    float: left;
+                }
+            .frame {
+              width: 30%;
+              margin: 0px auto;
+              text-align: center;
+            }
+            button {
+              margin: 0px;
+            }
+            .custom-btn {
+              width: 60px;
+              height: 35px;
+              color: #fff;
+              border-radius: 5px;
+              padding: 5px 5px;
+              font-family: 'Lato', sans-serif;
+              font-weight: 500;
+              font-size: 18px;
+              background: transparent;
+              cursor: pointer;
+              transition: all 0.3s ease;
+              position: relative;
+              display: inline-block;
+               box-shadow:inset 2px 2px 2px 0px rgba(255,255,255,.5),
+               7px 7px 20px 0px rgba(0,0,0,.1),
+               4px 4px 5px 0px rgba(0,0,0,.1);
+              outline: none;
+            }
+            .btn-9 {
+	  border: none;
+	  transition: all 0.3s ease;
+	  overflow: hidden;
+      position: relative;
+
+	}
+	.btn-9:after {
+	  position: absolute;
+	  content: " ";
+	  z-index: -1;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100%;
+	   background-color: #1fd1f9;
+	background-image: linear-gradient(315deg, #1fd1f9 0%, #b621fe 74%);
+	  transition: all 0.3s ease;
+	}
+	.btn-9:hover {
+	  background: transparent;
+	  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	              -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+	    inset -4px -4px 6px 0 rgba(255,255,255,.5),
+	    inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
+	  color: #fff;
+	}
+	.btn-9:hover:after {
+	  -webkit-transform: scale(2) rotate(180deg);
+	  transform: scale(2) rotate(180deg);
+	  box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	              -4px -4px 6px 0 rgba(116, 125, 136, .2), 
+	    inset -4px -4px 6px 0 rgba(255,255,255,.5),
+	    inset 4px 4px 6px 0 rgba(116, 125, 136, .3);
+	}
+
+            </style>
+            <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.2&ak=5Tt95uGXtzemKlU3yneaPTIBqGOogLI6"></script>
+             </head>
+    <body>
+        
+         <h1 align="center" style="position:relative;top: 20px ;letter-spacing:30px; color: black;">
+            <font size="18px" face="黑体"  >
+                管 理 系 统
+            </font>
+        </h1>
+        <form method="post" name="theForm" enctype="multipart/form-data" onsubmit="return validate()" >
+            <table cellspacing="1" cellpadding="3" width="50%">
+              <tr>
+                <td class="label" style="color: #fff;width: 70px;">
+                    <font size="5px" face="宋体" >
+                        经度
+                    </font>
+                </td>
+                <td ><input type="text" name="lng" id="lng" value="" style="height: 25px;"/>
+                </td>
+          
+                <td class="label" style="color: #fff;">
+                    <font size="5px" face="宋体" >
+                        纬度
+                    </font>
+                </td>
+                <td><input type="text" name="lat" id="lat" value="" style="height: 25px;"/>
+                </td>
+      
+                <td class="label" style="color: #fff;">
+                    <font size="5px" face="宋体" >
+                       地址
+                    </font>
+                </td>
+                <td>
+                  <input type='text' value='' name='sever_add' id='sever_add' readonly style="height: 25px;">
+                </td>
+                <td>
+                  <button class="custom-btn btn-9" id="btn9" type="button"> 添加 </button>
+                </td>
+              </tr>
+            </table>
+          </form>
+            <div id="container" style="width: 70%;height: 70%; display: block"></div>
+            <p><input id="startBtn" type="button" onclick="startTool();" value="开启取点工具" /><input type="button" onclick="map.clearOverlays();points=[];" value="清除" /></p>
+            <p><input id="startBtn2" type="button" onclick="startTool2();" value="开启连线工具" /><input type="button" onclick="points=[];" value="清除" /></p>
+    </body>
+</html>
+
+<script>
+    function addMarker(points) {
+        for(var i=0, pointsLen = points.length; i<pointsLen; i++) {
+        var point = new BMap.Point(points[i].lng, points[i].lat); //将标注点转化成地图上的点
+        var marker = new BMap.Marker(point); //将点转化成标注点
+        markersArray.push(marker);
+        map.addOverlay(marker);  //将标注点添加到地图上
+        //添加监听事件
+        (function() {
+            var thePoint = points[i];
+            marker.addEventListener("rightclick", function (e) {
+			  if(confirm('确定要删除吗')==true){
+			  	map.removeOverlay(this,thePoint);
+			      return true;			
+			  }else{			
+			       return false;			
+			   }
+        });
+            marker.addEventListener("click",
+            //显示信息的方法
+                function() {
+                showInfo(this,thePoint);
+            });
+         })();  
+    }
+    }
+    function showInfo(thisMarker,point) {
+    //获取点的信息
+    var sContent = 
+    '<ul style="margin:0 0 5px 0;padding:0.2em 0">'
+    +'<li style="line-height: 15px;font-size: 13px;">'  
+    +'<span style="width: 50px;display: inline-block;">经纬度:</span>' + point.lng+","+point.lat+ '</li>'  
+    +'<li style="line-height: 15px;font-size: 13px;">'  
+    +'<span style="width: 50px;display: inline-block;">地点:</span>' + point.address + '</li>'  
+    var infoWindow = new BMap.InfoWindow(sContent); //创建信息窗口对象
+    thisMarker.openInfoWindow(infoWindow); //图片加载完后重绘infoWindow
+}
+</script>
+
+<script>
+    var key = 1;  //开关
+    var key2 = 1;   //开关2
+    var map = new BMap.Map('container'); // 创建Map实例
+    var geoc = new BMap.Geocoder();  //地址解析对象
+    var polyline = new BMap.Polyline(points,{strokeWeight:7,strokeColor:"red",strokeOpacity:0.8}); //折线覆盖物
+    var polyline1 = new BMap.Polyline(points,{strokeWeight:7,strokeColor:"red",strokeOpacity:0.8}); //折线覆盖物
+    var polyline2 = new BMap.Polyline(points,{strokeWeight:7,strokeColor:"red",strokeOpacity:0.8});
+    var polyline3 = new BMap.Polyline(points,{strokeWeight:7,strokeColor:"red",strokeOpacity:0.8});
+    var polyline4 = new BMap.Polyline(points,{strokeWeight:7,strokeColor:"red",strokeOpacity:0.8});
+    var polyline5 = new BMap.Polyline(points,{strokeWeight:7,strokeColor:"red",strokeOpacity:0.8});
+    var polyline6 = new BMap.Polyline(points,{strokeWeight:7,strokeColor:"red",strokeOpacity:0.8});
+    var newpoint;
+    var points=[];
+    var markersArray = [];
+    var geolocation = new BMap.Geolocation();
+    map.centerAndZoom(new BMap.Point(106.561312,29.564221), 12); // 初始化地图,设置中心点坐标和地图级别
+    geolocation.getCurrentPosition(function (r) {
+    if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+      var mk = new BMap.Marker(r.point);
+      map.panTo(r.point);
+      map.enableScrollWheelZoom(true);
+    }
+    else {
+      alert('failed' + this.getStatus());
+    }
+  }, {enableHighAccuracy: true})
+  map.addEventListener("click", showInfo1);
+  var placepoint=[
+  {"lng":106.584766,"lat":29.568199,"address":"洪崖洞"},
+      {"lng":107.790934,"lat":29.376906,"address":"武隆喀斯特旅游区"},
+      {"lng":106.499718,"lat":29.459882,"address":"大渡口区义渡公园"},
+      {"lng":106.730331,"lat":29.510301,"address":"迎龙湖国家湿地公园"},
+      {"lng":106.701799,"lat":29.645597,"address":"玉峰山森林公园"},
+      {"lng":106.752851,"lat":29.74467,"address":"铜锣山矿山公园"},
+      {"lng":106.236104,"lat":29.998432,"address":"赵家渡水生态公园"},
+      {"lng":106.080042,"lat":29.834489,"address":"人民公园（迎宾东路）"},
+      {"lng":106.452879,"lat":29.583095,"address": "磁器口"},
+      {"lng":106.521106,"lat":29.672908,"address": "欢乐谷"},  
+  ]
+  //内环point数组
+  var points1 = [  
+      {"lng":106.468104,"lat":29.581121,"address": "重庆市重庆市沙坪坝区G75(高家花园大桥)"}, 
+      {"lng":106.477662,"lat":29.588533,"address": "重庆市重庆市江北区G75(石马河立交)"},
+      {"lng":106.480195,"lat":29.59783,"address": "重庆市重庆市江北区江安路"},
+      {"lng":106.489376,"lat":29.609951,"address": "重庆市重庆市江北区石子山立交"},
+      {"lng":106.50109,"lat":29.61408,"address": "重庆市重庆市渝北区G75(北环立交)"},  
+      {"lng":106.538136,"lat":29.621537,"address": "重庆市重庆市渝北区人和立交"},  
+      {"lng":106.564115,"lat":29.627094,"address": "重庆市重庆市渝北区G50(东环立交)"},  
+      {"lng":106.568427,"lat":29.617141,"address": "重庆市重庆市渝北区G65(五童立交)"},  
+      {"lng":106.606066,"lat":29.603215,"address": "重庆市重庆市南岸区G65(包茂高速)"},  
+      {"lng":106.612426,"lat":29.584073,"address": "重庆市重庆市南岸区G65(包茂高速)"},  
+      {"lng":106.606515,"lat":29.557514,"address": "重庆市重庆市南岸区G65(南山立交)"},
+      {"lng":106.596741,"lat":29.52903,"address": "重庆市重庆市南岸区G65(江南立交)"},
+      {"lng":106.629152,"lat":29.504074,"address": "重庆市重庆市南岸区G65(包茂高速)"},
+      {"lng":106.627068,"lat":29.480905,"address": "重庆市重庆市南岸区G65(内环快速)"},
+      {"lng":106.615103,"lat":29.462353,"address": "重庆市重庆市巴南区G65(包茂高速)"},
+      {"lng":106.601951,"lat":29.393743,"address": "重庆市重庆市巴南区南环互通"},
+      {"lng":106.568678,"lat":29.401642,"address": "重庆市重庆市巴南区G75(兰海高速)"},
+      {"lng":106.550065,"lat":29.421778,"address": "重庆市重庆市巴南区巴南立交"}, 
+      {"lng":106.531255,"lat":29.436248,"address": "重庆市重庆市巴南区G75(兰海高速)"}, 
+      {"lng":106.519244,"lat":29.459413,"address": "重庆市重庆市巴南区华陶立交"}, 
+      {"lng":106.488828,"lat":29.460655,"address": "重庆市重庆市大渡口区G75(大渡口立交)"}, 
+      {"lng":106.47936,"lat":29.470214,"address": "重庆市重庆市大渡口区G75(新华立交)"},  
+      {"lng":106.461133,"lat":29.48116,"address": "重庆市重庆市九龙坡区G75(兰海高速)"},  
+      {"lng":106.453605,"lat":29.501249,"address": "重庆市重庆市九龙坡区凤中立交"},   
+      {"lng":106.446288,"lat":29.520053,"address": "重庆市重庆市沙坪坝区G75(西环立交)"},  
+      {"lng":106.451112,"lat":29.530699,"address": "重庆市重庆市沙坪坝区G319(石新路)"}, 
+      {"lng":106.450007,"lat":29.543882,"address": "重庆市重庆市沙坪坝区G75(高滩岩立交)"}, 
+      {"lng":106.450906,"lat":29.556528,"address": "重庆市重庆市沙坪坝区G75(红糟房大桥)"}, 
+      {"lng":106.459332,"lat":29.569063,"address": "重庆市重庆市沙坪坝区杨公桥立交"}, 
+      {"lng":106.468104,"lat":29.581121,"address": "重庆市重庆市沙坪坝区G75(高家花园大桥)"},  
+];
+var points11 = [ 
+      {"lng":106.50109,"lat":29.61408,"address": "重庆市重庆市渝北区G75(北环立交)"},  
+      {"lng":106.564115,"lat":29.627094,"address": "重庆市重庆市渝北区G50(东环立交)"},   
+      {"lng":106.606066,"lat":29.603215,"address": "重庆市重庆市南岸区G65(包茂高速)"},   
+      {"lng":106.606515,"lat":29.557514,"address": "重庆市重庆市南岸区G65(南山立交)"},
+      {"lng":106.596741,"lat":29.52903,"address": "重庆市重庆市南岸区G65(江南立交)"},
+      {"lng":106.629152,"lat":29.504074,"address": "重庆市重庆市南岸区G65(包茂高速)"},
+      {"lng":106.615103,"lat":29.462353,"address": "重庆市重庆市巴南区G65(包茂高速)"},
+      {"lng":106.601951,"lat":29.393743,"address": "重庆市重庆市巴南区南环互通"},
+      {"lng":106.531255,"lat":29.436248,"address": "重庆市重庆市巴南区G75(兰海高速)"},   
+      {"lng":106.461133,"lat":29.48116,"address": "重庆市重庆市九龙坡区G75(兰海高速)"},  
+      {"lng":106.446288,"lat":29.520053,"address": "重庆市重庆市沙坪坝区G75(西环立交)"},      
+      {"lng":106.468104,"lat":29.581121,"address": "重庆市重庆市沙坪坝区G75(高家花园大桥)"},  
+];
+  //二环point数组
+  var points2 = [
+
+  {"lng":106.602203,"lat":29.38468,"address": "重庆市重庆市巴南区G75(南环互通)"  },
+  {"lng":106.593004,"lat":29.355911,"address":"重庆市重庆市巴南区G75(兰海高速)"},
+  {"lng":106.577697  ,"lat": 29.296585  ,"address":"重庆市重庆市巴南区G5001(绕城渝黔互通立交桥)"},
+  {"lng": 106.612479  ,"lat": 29.316049  ,"address":"重庆市重庆市巴南区G5001(重庆绕城高速)"},
+  {"lng": 106.636554  ,"lat": 29.32663  ,"address":"重庆市重庆市巴南区G5001(百合立交)"},
+  {"lng":106.647477   ,"lat": 29.329905  ,"address":  "重庆市重庆市巴南区G5001(重庆绕城高速)" },
+  {"lng":  106.653514 ,"lat":29.345207   ,"address": "重庆市重庆市巴南区绕城渝湘互通"  },
+  {"lng": 106.657916  ,"lat": 29.359579  ,"address": "重庆市重庆市巴南区G5001(重庆绕城高速)"  },
+  {"lng": 106.697801  ,"lat": 29.383154  ,"address": "重庆市重庆市巴南区G5001(忠兴枢纽互通)" },
+  {"lng":106.710916   ,"lat": 29.423398  ,"address":"重庆市重庆市巴南区G5001(重庆绕城高速)"   },
+  {"lng": 106.721839  ,"lat": 29.462148  ,"address": "重庆市重庆市巴南区惠民互通"  },
+  {"lng":106.718677   ,"lat": 29.50387  ,"address": "重庆市重庆市南岸区G5001(重庆绕城高速)"  },
+  {"lng": 106.731361  ,"lat": 29.528543  ,"address": "重庆市重庆市南岸区G5001(重庆绕城高速)" },
+  {"lng": 106.745375  ,"lat":  29.543626 ,"address":  "重庆市重庆市南岸区G5021(绕城东互通)" },
+  {"lng":106.761975   ,"lat": 29.571273  ,"address":  "重庆市重庆市南岸区G5001(重庆绕城高速)" },
+  {"lng":106.796794   ,"lat": 29.645663  ,"address":  "重庆市重庆市江北区绕城渝宜互通" },
+  {"lng": 106.794638  ,"lat": 29.669328  ,"address":  "重庆市重庆市江北区G5001(协睦立交)" },
+  {"lng": 106.742949 ,"lat":  29.735255 ,"address": "重庆市重庆市渝北区G5001(玉峰山隧道)" },
+  {"lng":106.710485   ,"lat":29.768759   ,"address": "重庆市重庆市渝北区G65(包茂高速)"  },
+  {"lng": 106.698591  ,"lat": 29.773932  ,"address":  "重庆市重庆市渝北区G5001(绕城渝邻互通立交桥)" },
+  {"lng": 106.672792  ,"lat": 29.773618  ,"address": "重庆市重庆市渝北区G5001(空港东互通)" },
+  {"lng": 106.642968  ,"lat":  29.768101 ,"address":  "重庆市重庆市渝北区空港互通" },
+  {"lng": 106.590938  ,"lat": 29.766282  ,"address":  "重庆市重庆市北碚区G5001(重庆绕城高速)" },
+  {"lng": 106.565606  ,"lat":29.778916   ,"address": "重庆市重庆市北碚区G85(渝广互通)" },
+  {"lng": 106.552239  ,"lat": 29.781581  ,"address": "重庆市重庆市北碚区G5001(重庆绕城高速)" },
+  {"lng": 106.534453  ,"lat": 29.777286  ,"address": "重庆市重庆市北碚区G5001(重庆绕城高速)" },
+  {"lng": 106.508366  ,"lat": 29.791642  ,"address": "重庆市重庆市北碚区G5001(重庆绕城高速)" },
+  {"lng": 106.487561  ,"lat":  29.786439 ,"address": "重庆市重庆市北碚区G5001(施家梁互通)" },
+  {"lng": 106.417242  ,"lat": 29.800136  ,"address": "重庆市重庆市北碚区G75(绕城北碚南互通立交桥)" },
+  {"lng":  106.466756 ,"lat": 29.771612  ,"address": "重庆市重庆市北碚区G75(兰海高速)" },
+  {"lng": 106.47962  ,"lat": 29.686931  ,"address": "重庆市重庆市渝北区G75(兰海高速)" },
+  {"lng":106.493202   ,"lat": 29.673439  ,"address": "重庆市重庆市渝北区金渝大道" },
+  {"lng": 106.49888  ,"lat": 29.651595  ,"address": "重庆市重庆市渝北区G75(兰海高速)" },
+  {"lng": 106.50109  ,"lat": 29.61408  ,"address": "重庆市重庆市渝北区G75(北环立交)" },
+];
+var points22 = [
+
+{"lng":106.602203,"lat":29.38468,"address": "重庆市重庆市巴南区G75(南环互通)"  },
+{"lng":106.577697  ,"lat": 29.296585  ,"address":"重庆市重庆市巴南区G5001(绕城渝黔互通立交桥)"},
+{"lng": 106.636554  ,"lat": 29.32663  ,"address":"重庆市重庆市巴南区G5001(百合立交)"},
+{"lng":  106.653514 ,"lat":29.345207   ,"address": "重庆市重庆市巴南区绕城渝湘互通"  },
+{"lng": 106.697801  ,"lat": 29.383154  ,"address": "重庆市重庆市巴南区G5001(忠兴枢纽互通)" },
+{"lng": 106.721839  ,"lat": 29.462148  ,"address": "重庆市重庆市巴南区惠民互通"  },
+{"lng": 106.745375  ,"lat":  29.543626 ,"address":  "重庆市重庆市南岸区G5021(绕城东互通)" },
+{"lng":106.796794   ,"lat": 29.645663  ,"address":  "重庆市重庆市江北区绕城渝宜互通" },
+{"lng": 106.794638  ,"lat": 29.669328  ,"address":  "重庆市重庆市江北区G5001(协睦立交)" },
+{"lng":106.710485   ,"lat":29.768759   ,"address": "重庆市重庆市渝北区G65(包茂高速)"  },
+{"lng": 106.698591  ,"lat": 29.773932  ,"address":  "重庆市重庆市渝北区G5001(绕城渝邻互通立交桥)" },
+{"lng": 106.672792  ,"lat": 29.773618  ,"address": "重庆市重庆市渝北区G5001(空港东互通)" },
+{"lng": 106.642968  ,"lat":  29.768101 ,"address":  "重庆市重庆市渝北区空港互通" },
+{"lng": 106.565606  ,"lat":29.778916   ,"address": "重庆市重庆市北碚区G85(渝广互通)" },
+{"lng": 106.508366  ,"lat": 29.791642  ,"address": "重庆市重庆市北碚区G5001(重庆绕城高速)" },
+{"lng": 106.487561  ,"lat":  29.786439 ,"address": "重庆市重庆市北碚区G5001(施家梁互通)" },
+{"lng": 106.417242  ,"lat": 29.800136  ,"address": "重庆市重庆市北碚区G75(绕城北碚南互通立交桥)" },
+{"lng":106.493202   ,"lat": 29.673439  ,"address": "重庆市重庆市渝北区金渝大道" },
+{"lng": 106.50109  ,"lat": 29.61408  ,"address": "重庆市重庆市渝北区G75(北环立交)" },
+];
+  var points3=[
+  {"lng":  106.417242 ,"lat":29.800136   ,"address": "重庆市重庆市北碚区G75(绕城北碚南互通立交桥)" },
+  {"lng":106.39491   ,"lat":29.795137   ,"address": "重庆市重庆市北碚区S204(碚青路)" },
+  {"lng": 106.350677  ,"lat": 29.752502  ,"address": "重庆市重庆市北碚区G5001(歇马互通)" },
+  {"lng":106.337382   ,"lat": 29.733875  ,"address": "重庆市重庆市沙坪坝区G5001(重庆绕城高速)" },
+  {"lng":106.328256   ,"lat": 29.680327  ,"address": "重庆市重庆市沙坪坝区G5001(绕城渝遂互通)" },
+  {"lng":106.374824   ,"lat": 29.647593  ,"address": "重庆市重庆市沙坪坝区G93(物流园互通)" },
+  {"lng": 106.394586  ,"lat":  29.625587 ,"address": "重庆市重庆市沙坪坝区G93(成渝环线高速)" },
+  {"lng":106.396958   ,"lat": 29.567959 ,"address": "重庆市重庆市沙坪坝区G93(成渝环线高速)" },
+  {"lng": 106.450007  ,"lat": 29.543882  ,"address": "重庆市重庆市沙坪坝区G75(高滩岩立交)" },
+  ]
+  var points4=[
+  {"lng":106.564115   ,"lat": 29.627094  ,"address": "重庆市重庆市渝北区G50(东环立交)" },
+  {"lng": 106.601628  ,"lat": 29.63962  ,"address": "重庆市重庆市江北区G50(白杨沟立交)" },
+  {"lng": 106.616827  ,"lat": 29.633028  ,"address": "重庆市重庆市江北区G50(跑马坪立交桥)" },
+  {"lng": 106.632566  ,"lat": 29.635916  ,"address": "重庆市重庆市江北区G50(黑石子互通)" },
+  {"lng":106.64198   ,"lat": 29.626372  ,"address": "重庆市重庆市江北区港城南路" },
+  {"lng":106.659443   ,"lat": 29.621474  ,"address": "重庆市重庆市江北区G50(沪渝高速)" },
+  {"lng": 106.685134  ,"lat":  29.6324 ,"address": "重庆市重庆市江北区G50(渝宜高速)" },
+  {"lng": 106.722971  ,"lat":  29.625995 ,"address": "重庆市重庆市江北区G50(沪渝高速)" },
+  {"lng": 106.779456  ,"lat": 29.635853  ,"address": "重庆市重庆市江北区G50(沪渝高速)" },
+  {"lng":106.796794   ,"lat": 29.645663  ,"address":  "重庆市重庆市江北区绕城渝宜互通" },
+  {"lng": 106.794638  ,"lat": 29.669328  ,"address":  "重庆市重庆市江北区G5001(协睦立交)" },
+  {"lng": 106.742949 ,"lat":  29.735255 ,"address": "重庆市重庆市渝北区G5001(玉峰山隧道)" },
+  {"lng":106.710485   ,"lat":29.768759   ,"address": "重庆市重庆市渝北区G65(包茂高速)"  },
+  {"lng":106.70019   ,"lat": 29.753568  ,"address": "重庆市重庆市渝北区渝北互通立交桥" },
+  {"lng": 106.685278  ,"lat":29.734283   ,"address": "重庆市重庆市渝北区G65(包茂高速)" },
+  {"lng": 106.662138  ,"lat": 29.69112  ,"address": "重庆市重庆市渝北区新龙湾立交" },
+  {"lng": 106.648699  ,"lat": 29.656602  ,"address": "重庆市重庆市渝北区G65(包茂高速)" },
+  {"lng": 106.662138  ,"lat": 29.69112  ,"address": "重庆市重庆市渝北区新龙湾立交" },
+  {"lng": 106.662138  ,"lat": 29.69112  ,"address": "重庆市重庆市渝北区新龙湾立交" },
+]
+  var points5=[
+  {"lng":106.417242 ,"lat":29.800136 ,"address":"重庆市重庆市北碚区G75(绕城北碚南互通立交桥)"},
+  {"lng":106.416146 ,"lat": 29.817764,"address":"重庆市重庆市北碚区G75(北碚互通)"},
+  {"lng":106.421248 ,"lat":29.834902 ,"address":"重庆市重庆市北碚区G75(兰海高速)"},
+    {"lng": 106.42132,"lat":29.835153 ,"address":"重庆市重庆市北碚区G75(兰海高速)"},
+    {"lng":106.447299 ,"lat": 29.860965,"address":"重庆市重庆市北碚区G75(东阳互通)"},
+    {"lng":106.420673 ,"lat":29.889996 ,"address":"重庆市重庆市北碚区G75(兰海高速)"},
+    {"lng":106.402204 ,"lat":29.908969 ,"address":"重庆市重庆市合川区G75(兰海高速)"},
+    {"lng":106.395305 ,"lat":29.933886 ,"address":"重庆市重庆市合川区G75(兰海高速)"},
+    {"lng": 106.331705,"lat":29.963803 ,"address":"重庆市重庆市合川区沙溪互通"},
+    {"lng": 106.329477,"lat":29.944589 ,"address":"重庆市重庆市合川区G8515(广泸高速)"},
+    {"lng":106.263649 ,"lat":29.915481 ,"address":"重庆市重庆市合川区S80(十塘立交桥)"},
+    {"lng": 106.219668,"lat": 29.889808,"address":"重庆市重庆市铜梁县G8515(旧县互通)"},
+    {"lng":106.096062 ,"lat":29.879506 ,"address":"重庆市重庆市铜梁县铜梁枢纽互通"},
+    {"lng":106.1307 ,"lat":29.841669 ,"address":"重庆市重庆市铜梁县G93(铜梁互通)"},
+    {"lng":106.170944 ,"lat":29.797926 ,"address":"重庆市重庆市铜梁县G93(成渝环线高速)"},
+    {"lng": 106.217009,"lat": 29.764323,"address":"重庆市重庆市璧山县G93(成渝环线高速)"},
+    {"lng":106.247767 ,"lat":29.712704 ,"address":"重庆市重庆市璧山县G93(成渝环线高速)"},
+    {"lng":106.276549 ,"lat":29.690367 ,"address":"重庆市重庆市璧山县璧山北互通"},
+    {"lng":106.328256 ,"lat":29.680327 ,"address":"重庆市重庆市沙坪坝区G5001(绕城渝遂互通)"},
+  ]
+addMarker(placepoint);
+addMarker(points11);
+addMarker(points22);
+addMarker(points3);
+addMarker(points4);
+addMarker(points5);
+
+polyline1.setPath(points1);
+polyline2.setPath(points2);
+polyline3.setPath(points3);
+polyline4.setPath(points4);
+polyline5.setPath(points5);
+map.addOverlay(polyline1);
+map.addOverlay(polyline2);
+map.addOverlay(polyline3);
+map.addOverlay(polyline4);
+map.addOverlay(polyline5);
+    // 创建点标记
+  function validate() {
+    var sever_add = document.getElementsByName('sever_add')[0].value;
+    if (isNull(sever_add)) {
+      alert('请选择地址');
+      return false;
+    }
+    return true;
+  }
+  function showInfo1(e) {
+    document.getElementById('lng').value = e.point.lng;
+    document.getElementById('lat').value = e.point.lat;
+    geoc.getLocation(e.point, function (rs) {
+      var addComp = rs.addressComponents;
+      var address = addComp.province + addComp.city + addComp.district + addComp.street + addComp.streetNumber;
+    document.getElementById('sever_add').value = address;
+    });
+    if(key==0){
+    document.getElementById("btn9").addEventListener("click",function(){
+    var point2=[{"lng":e.point.lng,"lat":e.point.lat,"address":document.getElementById('sever_add').value}];
+    addMarker(point2);})
+    }
+  }
+    function startTool(){   //开关函数
+if(key==1){
+        document.getElementById("startBtn").style.background = "green";
+        document.getElementById("startBtn").style.color = "white";
+        document.getElementById("startBtn").value = "开启状态";
+        key=0;
+    }
+    else{
+        document.getElementById("startBtn").style.background = "red";
+        document.getElementById("startBtn").value = "关闭状态";
+        key=1;
+    }
+}
+function startTool2(){   //开关函数
+if(key2==1){
+        document.getElementById("startBtn2").style.background = "green";
+        document.getElementById("startBtn2").style.color = "white";
+        document.getElementById("startBtn2").value = "开启状态";
+        key2=0;
+    }
+    else{
+        document.getElementById("startBtn2").style.background = "red";
+        document.getElementById("startBtn2").value = "关闭状态";
+        key2=1;
+    }
+}
+
+map.addEventListener("click",function(e){
+  if(key2==0){
+  newpoint = new BMap.Point(e.point.lng,e.point.lat);
+  points.push(newpoint);  //将新增的点放到数组中
+  polyline.setPath(points);   //设置折线的点数组
+  map.addOverlay(polyline);   //将折线添加到地图上
+  }
+});
+polyline.addEventListener("rightclick", function (e) {
+			  if(confirm('确定要删除吗')==true){
+			  	map.removeOverlay(this);
+			      return true;			
+			  }else{			
+			       return false;			
+			   }
+        });
+</script>
+
+
